@@ -42,6 +42,7 @@ function addT(u: string, t: string): void {
   }
 }
 
+// Essa função remove um usuario
 function rU(u: string): void {
   for (let i = 0; i < us.length; i++) {
     if (us[i].n === u) {
@@ -53,6 +54,7 @@ function rU(u: string): void {
   console.log("User not found.");
 }
 
+// Essa função lista os usuarios
 function pU(): void {
   for (let i = 0; i < us.length; i++) {
     console.log("User: " + us[i].n + ", Age: " + us[i].a);

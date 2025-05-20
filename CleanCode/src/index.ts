@@ -7,68 +7,65 @@ type User = {
   task: string[];
 };
 
-const users: User[] = [];
+class UserManager {
+  private users: User[] = [];
 
-function userExists(username: string): boolean {
-  for (let i = 0; i < users.length; i++) {
-    if (users[i].name === username) {
-      return true;
+  private userExists(username: string): boolean {
+    return this.users.some((user) => user.name === username);
+  }
+
+  private findUser(username: string): User | undefined {
+    return this.users.find((user) => user.name === username);
+  }
+
+  addUser(username: string, age: number): void {
+    if (this.userExists(username)) {
+      console.log("User already exists.");
+      return;
     }
-  }
-  return false;
-}
 
-function findUser(username: string): User | undefined {
-  return users.find((user) => user.name === username);
-}
-
-function addUser(username: string, age: number): void {
-  if (userExists(username)) {
-    console.log("User already exists.");
-    return;
+    const newUser: User = { name: username, age, task: [] };
+    this.users.push(newUser);
+    console.log("User added.");
   }
 
-  const newUser = { name: username, age: age, task: [] };
-  users.push(newUser);
-  console.log("User added.");
-}
+  addTask(username: string, task: string): void {
+    const user = this.findUser(username);
+    if (!user) {
+      console.log("User not exists.");
+      return;
+    }
 
-function addTask(username: string, task: string): void {
-  if (!userExists(username)) {
-    console.log("User not exists.");
-    return;
-  }
-
-  const user = findUser(username);
-  if (user) {
     user.task.push(task);
     console.log("Task added.");
   }
-}
 
-function removeUser(username: string): void {
-  const user = findUser(username);
-  if (!user) {
-    console.log("User not exists.");
-    return;
+  removeUser(username: string): void {
+    const user = this.findUser(username);
+    if (!user) {
+      console.log("User not exists.");
+      return;
+    }
+
+    const index = this.users.indexOf(user);
+    this.users.splice(index, 1);
+    console.log("User removed.");
   }
 
-  const index = users.indexOf(user);
-  users.splice(index, 1);
-  console.log("User removed.");
-}
-
-function printUsers(): void {
-  for (let i = 0; i < users.length; i++) {
-    console.log("User: " + users[i].name + ", Age: " + users[i].age);
-    for (let j = 0; j < users[i].task.length; j++) {
-      console.log(" - Task: " + users[i].task[j]);
+  printUsers(): void {
+    for (const user of this.users) {
+      console.log(`User: ${user.name}, Age: ${user.age}`);
+      for (const task of user.task) {
+        console.log(` - Task: ${task}`);
+      }
     }
   }
 }
 
 function menu() {
+  const manager = new UserManager();
   let option = "";
+
   while (option !== "0") {
     console.log("\n1 - Add User");
     console.log("2 - Add Task");
@@ -81,16 +78,16 @@ function menu() {
     if (option === "1") {
       const name = prompt("Name: ").toUpperCase();
       const age = parseInt(prompt("Age: "));
-      addUser(name, age);
+      manager.addUser(name, age);
     } else if (option === "2") {
-      const name = prompt("Name: ");
+      const name = prompt("Name: ").toUpperCase();
       const task = prompt("Task: ");
-      addTask(name, task);
+      manager.addTask(name, task);
     } else if (option === "3") {
       const name = prompt("Name: ").toUpperCase();
-      removeUser(name);
+      manager.removeUser(name);
     } else if (option === "4") {
-      printUsers();
+      manager.printUsers();
     } else if (option === "0") {
       console.log("Bye");
     } else {
